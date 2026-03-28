@@ -7,7 +7,7 @@ import json
 import os
 import re
 
-import google.generativeai as genai
+from google import genai
 
 
 _CLUSTER_PROMPT_TEMPLATE = """
@@ -82,15 +82,16 @@ def cluster_topics(output_dir: str, api_key: str) -> dict:
         for s in summaries
     ]
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    client = genai.Client(api_key=api_key)
 
     prompt = _CLUSTER_PROMPT_TEMPLATE.format(
         posts_json=json.dumps(posts_for_prompt, indent=2)
     )
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-1.5-flash", contents=prompt
+        )
         raw_text = response.text
         clean_text = _strip_markdown_fences(raw_text)
         clusters = json.loads(clean_text)

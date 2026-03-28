@@ -5,12 +5,26 @@ Set your credentials and settings here before running main.py.
 
 import os
 
+from dotenv import load_dotenv
+
+# Load variables from a .env file if one exists (values already in the
+# environment take precedence, so this is safe in any deployment context).
+load_dotenv()
+
 # --- Target Instagram Profile ---
-INSTAGRAM_USERNAME = os.environ.get("INSTAGRAM_USERNAME", "bbcnews")
+TARGET_PROFILE = os.getenv("TARGET_PROFILE", "bbcnews")
+# Legacy alias kept for backward compatibility
+INSTAGRAM_USERNAME = os.getenv("INSTAGRAM_USERNAME", TARGET_PROFILE)
+
+# --- Instagram Login Credentials (optional but strongly recommended) ---
+# Providing credentials avoids 403 Forbidden errors caused by Instagram's
+# aggressive unauthenticated rate limits.
+IG_LOGIN_USER = os.getenv("IG_LOGIN_USER", "")
+IG_LOGIN_PASS = os.getenv("IG_LOGIN_PASS", "")
 
 # --- Google Gemini API Key ---
 # Obtain a free key from https://aistudio.google.com/app/apikey
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
 
 # --- Whisper Model Size ---
 # Options: "tiny", "base", "small", "medium", "large"

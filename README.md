@@ -1,6 +1,6 @@
 # InstagramSummarizer
 
-A Python pipeline that takes any public Instagram profile, downloads all posts/reels,
+A Python pipeline that takes any Instagram profile, downloads all posts/reels,
 transcribes video/audio, summarizes everything with Google Gemini (free tier), clusters
 content by topic, and outputs a clean structured knowledge base in Markdown + JSON.
 
@@ -53,38 +53,61 @@ instagram_pipeline/
 
 ## Quick Start
 
-### 1. Install dependencies
+### 1. Create and activate a virtual environment
+
+```bash
+python -m venv .venv
+
+# macOS / Linux
+source .venv/bin/activate
+
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+```
+
+### 2. Install dependencies
 
 ```bash
 pip install -r instagram_pipeline/requirements.txt
 ```
 
 > **Note:** `ffmpeg` must also be installed on your system.  
-> macOS: `brew install ffmpeg` | Ubuntu: `sudo apt install ffmpeg`
+> macOS: `brew install ffmpeg` | Ubuntu: `sudo apt install ffmpeg` | Windows: https://ffmpeg.org/download.html
 
-### 2. Configure
+### 3. Configure credentials
 
-Edit `instagram_pipeline/config.py` (or use environment variables):
+Copy the example environment file and fill in your credentials:
 
-```python
-INSTAGRAM_USERNAME = "nasa"          # Target public profile
-GEMINI_API_KEY     = "YOUR_KEY"      # https://aistudio.google.com/app/apikey
-WHISPER_MODEL      = "base"          # tiny / base / small / medium / large
-MAX_POSTS          = 20              # Cap posts to process
+```bash
+cp .env.example .env
 ```
 
-### 3. Run
+Then open `.env` and replace the placeholders:
+
+```dotenv
+IG_LOGIN_USER=your_instagram_username   # Your Instagram username
+IG_LOGIN_PASS=your_instagram_password   # Your Instagram password
+TARGET_PROFILE=bbcnews                  # The profile you want to analyse
+GEMINI_API_KEY=your_gemini_api_key      # https://aistudio.google.com/app/apikey
+```
+
+> **Why log in?**  
+> Instagram aggressively rate-limits unauthenticated requests and will return
+> `403 Forbidden` / `ProfileNotExistsException` for perfectly public profiles.
+> Providing your Instagram login credentials lets `instaloader` authenticate
+> before fetching the profile, which avoids these blocks entirely.
+> Your credentials are only stored locally in your `.env` file and are never
+> transmitted anywhere other than Instagram's own servers.
+
+### 4. Run the pipeline
 
 ```bash
 cd instagram_pipeline
 python main.py
 ```
 
-Or with environment variables:
-
-```bash
-INSTAGRAM_USERNAME=nasa GEMINI_API_KEY=your_key MAX_POSTS=10 python main.py
-```
+The pipeline is **resumable**: each step checks whether output already exists and skips
+completed work, so you can safely re-run after interruptions.
 
 ---
 
@@ -95,9 +118,6 @@ INSTAGRAM_USERNAME=nasa GEMINI_API_KEY=your_key MAX_POSTS=10 python main.py
 3. **Summarize** — Sends caption + transcript to Gemini; saves structured JSON.
 4. **Cluster** — Groups all posts into 5–10 topic categories with Gemini.
 5. **Export** — Writes per-topic `.md` files, a master `README.md`, and `all_posts.json`.
-
-The pipeline is **resumable**: each step checks whether output already exists and skips
-completed work, so you can safely re-run after interruptions.
 
 ---
 
@@ -116,11 +136,16 @@ After a successful run, `data/output/` contains:
 
 ## Environment Variables
 
+All settings can be controlled via the `.env` file or by exporting environment variables
+directly. Values already present in the environment take precedence over the `.env` file.
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `INSTAGRAM_USERNAME` | `bbcnews` | Target Instagram profile |
+| `TARGET_PROFILE` | `bbcnews` | Instagram profile to analyse |
+| `IG_LOGIN_USER` | *(empty)* | Your Instagram username (recommended) |
+| `IG_LOGIN_PASS` | *(empty)* | Your Instagram password (recommended) |
 | `GEMINI_API_KEY` | *(required)* | Google AI Studio API key |
-| `WHISPER_MODEL` | `base` | Whisper model size |
+| `WHISPER_MODEL` | `base` | Whisper model size (`tiny`/`base`/`small`/`medium`/`large`) |
 | `MAX_POSTS` | `20` | Max posts to process |
 | `OUTPUT_DIR` | `data` | Root output directory |
 
@@ -129,3 +154,4 @@ After a successful run, `data/output/` contains:
 ## License
 
 MIT
+

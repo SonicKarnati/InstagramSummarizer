@@ -63,6 +63,8 @@ def main() -> None:
             max_posts=config.MAX_POSTS,
             sleep_min=config.SCRAPER_SLEEP_MIN,
             sleep_max=config.SCRAPER_SLEEP_MAX,
+            login_user=config.IG_LOGIN_USER,
+            login_pass=config.IG_LOGIN_PASS,
         )
 
     # ── Step 2: Transcribe ────────────────────────────────────────

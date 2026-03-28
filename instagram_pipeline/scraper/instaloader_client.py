@@ -13,9 +13,10 @@ from tqdm import tqdm
 
 
 def scrape_profile(username: str, output_dir: str, max_posts: int | None = None,
-                   sleep_min: int = 3, sleep_max: int = 5) -> list[dict]:
+                   sleep_min: int = 3, sleep_max: int = 5,
+                   login_user: str = "", login_pass: str = "") -> list[dict]:
     """
-    Download posts from a public Instagram profile and save a post index.
+    Download posts from an Instagram profile and save a post index.
 
     Args:
         username:   Instagram username of the target profile.
@@ -23,6 +24,10 @@ def scrape_profile(username: str, output_dir: str, max_posts: int | None = None,
         max_posts:  Maximum number of posts to process. ``None`` means no limit.
         sleep_min:  Minimum seconds to sleep between requests.
         sleep_max:  Maximum seconds to sleep between requests.
+        login_user: Instagram account username for authenticated requests.
+                    Providing credentials is strongly recommended to avoid
+                    403 Forbidden errors on unauthenticated requests.
+        login_pass: Instagram account password for authenticated requests.
 
     Returns:
         A list of post metadata dicts.
@@ -42,6 +47,9 @@ def scrape_profile(username: str, output_dir: str, max_posts: int | None = None,
     )
 
     print(f"[scraper] Loading profile: {username}")
+    if login_user and login_pass:
+        print(f"[scraper] Logging in as {login_user} …")
+        loader.login(login_user, login_pass)
     profile = instaloader.Profile.from_username(loader.context, username)
 
     posts_metadata: list[dict] = []

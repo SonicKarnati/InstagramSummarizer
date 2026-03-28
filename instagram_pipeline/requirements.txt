@@ -1,0 +1,4 @@
+instaloader
+openai-whisper
+google-generativeai
+tqdm

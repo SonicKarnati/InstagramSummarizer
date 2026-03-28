@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+.installed.cfg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Pipeline data — downloaded media and generated files
+# Keep the directory stubs (.gitkeep) but ignore actual data
+instagram_pipeline/data/raw/**
+instagram_pipeline/data/transcripts/**
+instagram_pipeline/data/summaries/**
+instagram_pipeline/data/output/**
+
+# Keep .gitkeep files so empty directories are tracked
+!instagram_pipeline/data/raw/.gitkeep
+!instagram_pipeline/data/transcripts/.gitkeep
+!instagram_pipeline/data/summaries/.gitkeep
+!instagram_pipeline/data/output/.gitkeep
+
+# post_index.json is generated at runtime
+instagram_pipeline/data/post_index.json
+
+# Whisper model cache
+~/.cache/whisper/
+
+# Misc
+*.log
+*.tmp

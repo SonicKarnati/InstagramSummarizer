@@ -8,7 +8,7 @@ import os
 import re
 import time
 
-import google.generativeai as genai
+from google import genai
 from tqdm import tqdm
 
 
@@ -59,8 +59,7 @@ def summarize_posts(output_dir: str, api_key: str,
     transcripts_dir = os.path.join(output_dir, "transcripts")
     os.makedirs(summaries_dir, exist_ok=True)
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    client = genai.Client(api_key=api_key)
 
     index_path = os.path.join(output_dir, "post_index.json")
     with open(index_path, "r", encoding="utf-8") as f:
@@ -89,7 +88,9 @@ def summarize_posts(output_dir: str, api_key: str,
         )
 
         try:
-            response = model.generate_content(prompt)
+            response = client.models.generate_content(
+                model="gemini-1.5-flash", contents=prompt
+            )
             raw_text = response.text
             clean_text = _strip_markdown_fences(raw_text)
             summary_data = json.loads(clean_text)

@@ -49,3 +49,6 @@ instagram_pipeline/data/post_index.json
 # Misc
 *.log
 *.tmp
+
+# Environment / secrets — never commit the real .env file
+.env
